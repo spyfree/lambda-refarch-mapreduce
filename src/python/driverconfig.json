@@ -1,25 +1,28 @@
 {
-      "bucket": "big-data-benchmark",
-      "prefix": "pavlo/text/1node/uservisits/",
-      "jobBucket": "ENTER YOUR BUCKET HERE",
+      "bucket": "nyc-tlc",
+      "prefix": "trip data/yellow_tripdata_2016-01",
+      "jobBucket": "mapreduce-lambda-ny-trip",
       "region": "us-east-1",
-      "lambdaMemory": 1536,
+      "lambdaMemory": 3008,
       "concurrentLambdas": 1000,
       "lambda_read_timeout": 300,
       "boto_max_connections": 1000,
       "mapper": {
             "name": "mapper.py",
             "handler": "mapper.lambda_handler",
-            "zip": "mapper.zip"
+            "zip": "mapper.zip",
+            "layers":["arn:aws:lambda:us-east-1:656375353081:layer:geo:5","arn:aws:lambda:us-east-1:656375353081:layer:pandas:2","arn:aws:lambda:us-east-1:656375353081:layer:rtree:5"]
         },
       "reducer":{
             "name": "reducer.py",
             "handler": "reducer.lambda_handler",
-            "zip": "reducer.zip"
+            "zip": "reducer.zip",
+            "layers": ["arn:aws:lambda:us-east-1:656375353081:layer:aws_wrangler:1"]
         },
       "reducerCoordinator":{
             "name": "reducerCoordinator.py",
             "handler": "reducerCoordinator.lambda_handler",
-            "zip": "reducerCoordinator.zip"
+            "zip": "reducerCoordinator.zip",
+            "layers":[]
         }
 } 
