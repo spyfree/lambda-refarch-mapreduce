@@ -66,7 +66,7 @@ def lambda_handler(event, context):
         key_dict = json.loads(key)
         file_key = key_dict['key']
         Bytes_range = key_dict['range']
-        #Bytes_range="bytes=0-70000000" for test in case of oom
+        #Bytes_range="bytes=0-150000000" #for test in case of oom
         #control 
         response = s3_client.get_object(Bucket=src_bucket,Key=file_key, Range=Bytes_range)
         contents = response['Body'].read().decode('utf-8') 
@@ -111,7 +111,7 @@ def lambda_handler(event, context):
 
         # more cleaning, only keep in the right geometry data
         local_gdf.drop(['geometry','index_right'],axis=1,inplace=True)
-        local_gdf = local_gdf[(local_gdf.LocationId > 0)]
+        local_gdf = local_gdf[(local_gdf.LocationID > 0)]
 
         print(local_gdf.shape)
         line_count=local_gdf.shape[0]
@@ -144,14 +144,14 @@ def lambda_handler(event, context):
     #timeTaken = time_in_secs * 1000000000 # in 10^9 
     #s3DownloadTime = 0
     #totalProcessingTime = 0 
-    pret = [len(src_keys), line_count, time_in_secs, err]
+    
     mapper_fname = "%s/%s%s" % (job_id, TASK_MAPPER_PREFIX, mapper_id) 
     metadata = {
                     "linecount":  '%s' % line_count,
                     "processingtime": '%s' % time_in_secs,
                     "memoryUsage": '%s' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
                }
-
+    pret = [len(src_keys), line_count, time_in_secs,resource.getrusage(resource.RUSAGE_SELF).ru_maxrss, err]
     print("metadata", metadata)
     #write_to_s3(job_bucket, mapper_fname, json.dumps(output), metadata)
     write_to_s3(job_bucket, mapper_fname, out, metadata)

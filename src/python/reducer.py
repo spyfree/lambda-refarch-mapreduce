@@ -31,13 +31,14 @@ def write_to_s3(bucket, key, data, metadata):
     # Write to S3 Bucket
     s3.Bucket(bucket).put_object(Key=key, Body=data, Metadata=metadata)
 
-def write_pandas_parquet_to_s3(df, bucketName, keyName):
+def write_pandas_parquet_to_s3(df, bucketName,fname, keyName):
 
-    path = "s3://mapreduce-lambda-ny-trip/parquet_test/" + str(keyName)
+    path = "s3://" + str(bucketName) + "/parquet/" + str(keyName) 
     # dummy dataframe
     wr.s3.to_parquet(
         df=df,
-        path=path
+        path=path,
+        compression='gzip'
     )
 
 
@@ -129,9 +130,9 @@ def lambda_handler(event, context):
                     "memoryUsage": '%s' % resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
                }
 
-    #write_to_s3(job_bucket, fname, json.dumps(results), metadata)
+    write_to_s3(job_bucket, fname, json.dumps(results), metadata)
 
-    write_pandas_parquet_to_s3(final_df,'mapreduce-lambda-ny-trip',r_id)
+    write_pandas_parquet_to_s3(final_df,'mapreduce-lambda-ny-trip',fname,r_id)
     return pret
 
 '''

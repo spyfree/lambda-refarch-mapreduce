@@ -1,7 +1,7 @@
 {
     "jobId": "ny-trip",
     "jobBucket": "mapreduce-lambda-ny-trip",
-    "mapCount": 1,
+    "mapCount": 12,
     "reducerFunction": "trip-reducer-ny-trip",
     "reducerHandler": "reducer.lambda_handler"
 }

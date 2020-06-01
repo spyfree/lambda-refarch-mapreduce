@@ -149,7 +149,7 @@ def batch_creator_for_ny_trip(keys, lambda_memory, concurrent_lambdas):
     '''
     max_mem_for_data = 0.5 * lambda_memory * 1000 * 1000 
     # this is the biggest max mem for one mapper (lamabda size 3008) tested..
-    max_mem_for_data = 70000000
+    max_mem_for_data = 150000000
     batches = []
     
 

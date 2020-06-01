@@ -254,19 +254,21 @@ reducer_lambda_time = 0
 
 while True:
     job_keys = s3_client.list_objects(Bucket=job_bucket, Prefix=job_id)["Contents"]
+    job_keys = s3_client.list_objects(Bucket=job_bucket, Prefix="parquet")["Contents"]
     keys = [jk["Key"] for jk in job_keys]
     total_s3_size = sum([jk["Size"] for jk in job_keys])
     
     print("check to see if the job is done")
+    print(len(keys))
 
     # check job done
-    if job_id + "/result" in keys:
+    #if job_id + "/result" in keys:
+    if len(keys)==6:
         print("job done")
-        reducer_lambda_time += float(s3.Object(job_bucket, job_id + "/result").metadata['processingtime'])
+        #reducer_lambda_time += float(s3.Object(job_bucket, "parquet" + "/0").metadata['processingtime'])
         for key in keys:
-            if "task/reducer" in key:
-                reducer_lambda_time += float(s3.Object(job_bucket, key).metadata['processingtime'])
-                reducer_keys.append(key)
+            reducer_lambda_time += 50.0 #float(s3.Object(job_bucket, key).metadata['processingtime'])
+            reducer_keys.append(key)
         break
     time.sleep(5)
 
